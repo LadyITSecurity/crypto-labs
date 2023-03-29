@@ -1,16 +1,27 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+alphabet = ["abcdefghijklmnopqrstuvwxyz",
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+            "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+            "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"]
+mode = [26, 26, 33, 33]
 
 
-# Press the green button in the gutter to run the script.
+def function(text, s):
+    result = ''
+    for i in text:
+        success = False
+        for x in range(len(alphabet)):
+            guess = alphabet[x]
+            if i in guess:
+                result += guess[(guess.find(i) + s) % mode[x] - 1]
+                success = True
+                break
+        if success is not True:
+            result += i
+    print(result)
+    return result
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    text = 'привет, Arisa'
+    s = 4
+    function(text, s)
