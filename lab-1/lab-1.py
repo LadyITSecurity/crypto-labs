@@ -22,13 +22,29 @@ def encryption(text, key):
 
 
 def decription(text):
-    key = 0
-    for i in range(33):
+    print('Если хотите продолжить - нажимайте 1, для выхода - 0')
+    for key in range(33):
         result = encryption(text, key)
-        print(key, '\t', result)
+        print('key = ', key, '\t', result)
+        # flag = 0
+        # print('Продолжить? ', flag=int(input()))
+        flag = int(input('Продолжить? '))
+        if flag == 0:
+            return result
 
 
 if __name__ == '__main__':
-    text = 'привет, Arisa'
-    key = 4
-    decription(text)
+    f = open('text2.txt')
+    text = f.read()
+    print(text)
+    # fk = open('key.txt', 'w+')
+    # fk.write('4')
+    # text_key = fk.read()
+    # key = int(text_key)
+    # fk.close()
+    key = 31
+    cipher = encryption(text, key)
+    result = decription(cipher)
+    f2 = open('result.txt', 'w')
+    f2.write(result)
+    f2.close()
