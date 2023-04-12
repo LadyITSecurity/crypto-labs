@@ -34,7 +34,7 @@ def decription(text):
 
 
 if __name__ == '__main__':
-    f = open('text2.txt')
+    f = open('lab-1\\text2.txt')
     text = f.read()
     print(text)
     # fk = open('key.txt', 'w+')
@@ -45,6 +45,6 @@ if __name__ == '__main__':
     key = 31
     cipher = encryption(text, key)
     result = decription(cipher)
-    f2 = open('result.txt', 'w')
+    f2 = open('lab-1\\result.txt', 'w')
     f2.write(result)
     f2.close()
