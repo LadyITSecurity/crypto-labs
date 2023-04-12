@@ -58,11 +58,25 @@ def lfsr3(n):
     return lst, string, period
 
 
+def select_generator(first, second, third):
+    lst = list()
+    for j in range(0, len(first)):
+        if first[j] == 0:
+            lst.append(second[j])
+        else:
+            lst.append(third[j])
+    string = "".join(map(str, lst))
+    return string
+
+
 if __name__ == '__main__':
     SIZE = 100
     first, first_str, first_period = lfsr1(SIZE)
     second, second_str, second_period = lfsr2(SIZE)
     third, third_str, third_period = lfsr3(SIZE)
+    result = select_generator(first, second, third)
     print(first)
     print(second)
     print(third)
+    print(result)
+
