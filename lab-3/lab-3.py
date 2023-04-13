@@ -1,32 +1,32 @@
 def __gcd(a, b):
-	if(b == 0):
+	if b == 0:
 		return a
 	else:
 		return __gcd(b, a % b)
 
 
-def power(x, y, m):
-
-	if (y == 0):
-		return 1
-	p = power(x, y // 2, m) % m
-	p = (p * p) % m
-
-	return p if(y % 2 == 0) else (x * p) % m
+def power(a, n):
+	return (a ** (n-1)) % n
 
 
-def modInverse(a, m):
-
-	if (__gcd(a, m) != 1):
-		print("Inverse doesn't exist")
-
+def modInverse(a, n):
+	print('checking if a number is prime: ', n, 'with number ', a)
+	if __gcd(a, n) != 1:
+		print("the number isn`t prime! :(\n")
 	else:
-		print("Modular multiplicative inverse is ",
-			power(a, m - 2, m))
-
+		result = power(a, n)
+		print('remainder of the division ', result)
+		if result != 1:
+			a += 1
+			modInverse(a, n)
+		else:
+			print('the number is prime! :)\n')
 
 
 a = 3
-m = 11
-modInverse(a, m)
+n = 11
+max = n + 5
+while n < max:
+	modInverse(a, n)
+	n += 1
 
