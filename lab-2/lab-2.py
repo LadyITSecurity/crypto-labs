@@ -1,6 +1,6 @@
 import math
 import numpy as np
-from scipy.special import gammaincc, erfc
+from scipy.special import gammaincc, erfc, hyp1f1
 
 
 def berelekamp_massey(bits):
@@ -77,7 +77,7 @@ def linear_complexity_test(bits, patternlen=None):
     return (success, P, None)
 
 
-def spectral(bin_data: str):
+def spectral_test(bin_data: str):
 
     n = len(bin_data)
     plus_minus_one = []
@@ -87,13 +87,54 @@ def spectral(bin_data: str):
         elif char == '1':
             plus_minus_one.append(1)
     s = np.fft.fft(plus_minus_one)
-    modulus = np.abs(s[0:n // 2])
+    modulus = np.abs(s[0:n % 2])
     tau = np.sqrt(np.log(1 / 0.05) * n)
     count_n0 = 0.95 * (n / 2)
     count_n1 = len(np.where(modulus < tau)[0])
     d = (count_n1 - count_n0) / np.sqrt(n * 0.95 * 0.05 / 4)
     p_val = erfc(abs(d) / np.sqrt(2))
     return p_val
+
+
+def overlapping_patterns_test(bin_data: str, pattern_size=9, block_size=64):
+
+    n = len(bin_data)
+    pattern = ""
+    for i in range(pattern_size):
+        pattern += "1"
+    num_blocks = math.floor(n / block_size)
+    lambda_val = float(block_size - pattern_size + 1) / pow(2, pattern_size)
+    eta = lambda_val / 2.0
+    piks = [get_prob(i, eta) for i in range(5)]
+    diff = float(np.array(piks).sum())
+    piks.append(1.0 - diff)
+    pattern_counts = np.zeros(6)
+    for i in range(num_blocks):
+        block_start = i * block_size
+        block_end = block_start + block_size
+        block_data = bin_data[block_start:block_end]
+        pattern_count = 0
+        j = 0
+        while j < block_size:
+            sub_block = block_data[j:j + pattern_size]
+            if sub_block == pattern:
+                pattern_count += 1
+            j += 1
+        if pattern_count <= 4:
+            pattern_counts[pattern_count] += 1
+        else:
+            pattern_counts[5] += 1
+    chi_squared = 0.0
+    for i in range(len(pattern_counts)):
+        chi_squared += pow(pattern_counts[i] - num_blocks * piks[i], 2.0) / (num_blocks * piks[i])
+    return gammaincc(5.0 / 2.0, chi_squared / 2.0)
+
+
+def get_prob( u, x):
+    out = 1.0 * np.exp(-x)
+    if u != 0:
+        out = 1.0 * x * np.exp(2 * -x) * (2 ** -u) * hyp1f1(u + 1, 2, x)
+    return out
 
 
 def lfsr1(n):
@@ -164,7 +205,7 @@ def select_generator(first, second, third):
         else:
             lst.append(third[j])
     string = "".join(map(str, lst))
-    return lst , string
+    return lst, string
 
 
 if __name__ == '__main__':
@@ -172,7 +213,7 @@ if __name__ == '__main__':
     first, first_str, first_period = lfsr1(SIZE)
     second, second_str, second_period = lfsr2(SIZE)
     third, third_str, third_period = lfsr3(SIZE)
-    result , result_str = select_generator(first, second, third)
+    result, result_str = select_generator(first, second, third)
     print(first)
     print(second)
     print(third)
@@ -182,6 +223,9 @@ if __name__ == '__main__':
     success, p, _ = linear_complexity_test(result, patternlen=7)
     print("p = ", round(p, 3), '\n')
     print('Спектральный\n')
-    p = spectral(result_str)
-    print("p = ", p)
+    p = spectral_test(result_str)
+    print("p = ", round(p, 3), '\n')
+    print('Совпадение перекрывающихся шаблонов\n')
+    p = overlapping_patterns_test(result_str)
+    print("p = ", round(p, 3))
 
