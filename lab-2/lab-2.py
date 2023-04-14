@@ -3,7 +3,7 @@ import numpy as np
 from scipy.special import gammaincc, erfc
 
 
-def berelekamp_massey_test(bits):
+def berelekamp_massey(bits):
     n = len(bits)
     b = [0 for x in bits]
     c = [0 for x in bits]
@@ -12,15 +12,15 @@ def berelekamp_massey_test(bits):
     L = 0
     m = -1
     N = 0
-    while N < n:
+    while (N < n):
         d = bits[N]
         for i in range(1, L + 1):
             d = d ^ (c[i] & bits[N - i])
-        if d != 0:
+        if (d != 0):
             t = c[:]
             for i in range(0, n - N + m):
                 c[N - m + i] = c[N - m + i] ^ b[i]
-            if L <= (N / 2):
+            if (L <= (N / 2)):
                 L = N + 1 - L
                 m = N
                 b = t
@@ -30,7 +30,7 @@ def berelekamp_massey_test(bits):
 
 def linear_complexity_test(bits, patternlen=None):
     n = len(bits)
-    if patternlen is not None:
+    if patternlen != None:
         M = patternlen
     else:
         if n < 1000000:
@@ -43,9 +43,9 @@ def linear_complexity_test(bits, patternlen=None):
     LC = list()
     for i in range(N):
         x = bits[(i * M):((i + 1) * M)]
-        LC.append(berelekamp_massey_test(x)[0])
+        LC.append(berelekamp_massey(x)[0])
     a = float(M) / 2.0
-    b = (((-1) ** (M + 1)) + 9.0) / 36.0
+    b = ((((-1) ** (M + 1)) + 9.0)) / 36.0
     c = ((M / 3.0) + (2.0 / 9.0)) / (2 ** M)
     mu = a + b - c
     T = list()
@@ -74,10 +74,10 @@ def linear_complexity_test(bits, patternlen=None):
         chisq += ((v[i] - (N * pi[i])) ** 2.0) / (N * pi[i])
     P = gammaincc((K / 2.0), (chisq / 2.0))
     success = (P >= 0.01)
-    return success, P, None
+    return (success, P, None)
 
 
-def spectral_test(bin_data: str):
+def spectral(bin_data: str):
 
     n = len(bin_data)
     plus_minus_one = []
@@ -104,7 +104,7 @@ def lfsr1(n):
     state = 0b11101001
     lst = list()
     lst.append(state & 1)
-    while cnt < n:
+    while (cnt < n):
         newbit = ((state >> 7) ^ (state >> 1) ^ state) & 1
         state = (state >> 1) | (newbit << 6)
         lst.append(state & 1)
@@ -124,7 +124,7 @@ def lfsr2(n):
     state = 0b11111111
     lst = list()
     lst.append(state & 1)
-    while cnt < n:
+    while (cnt < n):
         newbit = ((state >> 7) ^ (state >> 5) ^ (state >> 3) ^ state) & 1
         state = (state >> 1) | (newbit << 6)
         lst.append(state & 1)
@@ -144,7 +144,7 @@ def lfsr3(n):
     state = 0b00101001
     lst = list()
     lst.append(state & 1)
-    while cnt < n:
+    while (cnt < n):
         newbit = ((state >> 7) ^ (state >> 5) ^ (state >> 1) ^ state) & 1
         state = (state >> 1) | (newbit << 6)
         lst.append(state & 1)
@@ -172,7 +172,7 @@ if __name__ == '__main__':
     first, first_str, first_period = lfsr1(SIZE)
     second, second_str, second_period = lfsr2(SIZE)
     third, third_str, third_period = lfsr3(SIZE)
-    result, result_str = select_generator(first, second, third)
+    result , result_str = select_generator(first, second, third)
     print(first)
     print(second)
     print(third)
@@ -182,6 +182,6 @@ if __name__ == '__main__':
     success, p, _ = linear_complexity_test(result, patternlen=7)
     print("p = ", round(p, 3), '\n')
     print('Спектральный\n')
-    p = spectral_test(result_str)
+    p = spectral(result_str)
     print("p = ", p)
 
