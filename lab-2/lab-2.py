@@ -45,7 +45,7 @@ def linear_complexity_test(bits, patternlen=None):
         x = bits[(i * M):((i + 1) * M)]
         LC.append(berelekamp_massey(x)[0])
     a = float(M) / 2.0
-    b = ((((-1) ** (M + 1)) + 9.0)) / 36.0
+    b = (((-1) ** (M + 1)) + 9.0) / 36.0
     c = ((M / 3.0) + (2.0 / 9.0)) / (2 ** M)
     mu = a + b - c
     T = list()
@@ -74,7 +74,7 @@ def linear_complexity_test(bits, patternlen=None):
         chisq += ((v[i] - (N * pi[i])) ** 2.0) / (N * pi[i])
     P = gammaincc((K / 2.0), (chisq / 2.0))
     success = (P >= 0.01)
-    return (success, P, None)
+    return success, P, None
 
 
 def spectral(bin_data: str):
@@ -104,7 +104,7 @@ def lfsr1(n):
     state = 0b11101001
     lst = list()
     lst.append(state & 1)
-    while (cnt < n):
+    while cnt < n:
         newbit = ((state >> 7) ^ (state >> 1) ^ state) & 1
         state = (state >> 1) | (newbit << 6)
         lst.append(state & 1)
@@ -164,7 +164,7 @@ def select_generator(first, second, third):
         else:
             lst.append(third[j])
     string = "".join(map(str, lst))
-    return lst , string
+    return lst, string
 
 
 if __name__ == '__main__':
