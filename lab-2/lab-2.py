@@ -1,6 +1,6 @@
 import math
 import numpy as np
-from scipy.special import gammaincc, erfc, hyp1f1
+from scipy.special import gammaincc, erfc, hyp1f1, gammainc
 
 
 def berelekamp_massey(bits):
@@ -28,7 +28,7 @@ def berelekamp_massey(bits):
     return L, c[0:L]
 
 
-def linear_complexity_test(bits, patternlen=None):
+def linear_complexity_test(bits: str, patternlen=None):
     n = len(bits)
     if patternlen is not None:
         M = patternlen
@@ -70,11 +70,12 @@ def linear_complexity_test(bits, patternlen=None):
             v[6] += 1
     pi = [0.010417, 0.03125, 0.125, 0.5, 0.25, 0.0625, 0.020833]
     chisq = 0.0
-    for i in range(K + 1):
-        chisq += ((v[i] - (N * pi[i])) ** 2.0) / (N * pi[i])
-    P = gammaincc((K / 2.0), (chisq / 2.0))
-    success = (P >= 0.01)
-    return success, P, None
+    for i in range(K+1):
+        tmp = ((v[i] - N * pi[i]) ** 2.0) / (N * pi[i])
+        chisq += tmp
+    P = gammainc((K / 2.0), (chisq / 2.0))
+    # success = (P >= 0.01)
+    return  P, None
 
 
 def spectral_test(bin_data: str):
@@ -207,25 +208,57 @@ def select_generator(first, second, third):
 
 
 if __name__ == '__main__':
+    f = open('lab-2\\data.e')
+    array_e = f.read()
+    f = open('lab-2\\data.pi')
+    array_pi = f.read()
+    array = []
+    for i in array_e:
+        if i == '1' or i == '0':
+            array.append(int(i))
+    arrayPi = []
+    for i in array_pi:
+        if i == '1' or i == '0':
+            arrayPi.append(int(i))
+
     SIZE = 100
-    first, first_str, first_period = lfsr1(SIZE)
-    second, second_str, second_period = lfsr2(SIZE)
-    third, third_str, third_period = lfsr3(SIZE)
-    result, result_str = select_generator(first, second, third)
-    print(first)
-    print(second)
-    print(third)
-    print(result)
-    print('\nСтатистические тесты:')
+    # first, first_str, first_period = lfsr1(SIZE)
+    # second, second_str, second_period = lfsr2(SIZE)
+    # third, third_str, third_period = lfsr3(SIZE)
+    # result, result_str = select_generator(first, second, third)
+    # print(first)
+    # print(second)
+    # print(third)
+    # print(first_period)
+    # print(second_period)
+    # print(third_period)
+    # print(result)
+    # print('\nСтатистические тесты:')
+    #
+    # print('\nНа линейную сложность e')
+    # success, p, _ = linear_complexity_test( array, patternlen=8)
+    # print("p = ", p, '')
+    #
+    # print('\nСпектральный e')
+    # p = spectral_test(array_e)
+    # print("p = ", p, '')
+    #
+    # print('\nСовпадение перекрывающихся шаблонов e')
+    # p = overlapping_patterns_test(array_e)
+    # print("p = ", p)
+    #
+    # print('\nСпектральный pi')
+    # p = spectral_test(array_pi)
+    # print("p = ", p, '')
+    #
+    # print('\nСовпадение перекрывающихся шаблонов pi')
+    # p = overlapping_patterns_test(array_pi)
+    # print("p = ", p)
+    #
+    print('\nНа линейную сложность pi')
+    p, _ = linear_complexity_test(arrayPi, patternlen=495)
+    print("p = ", p, '')
 
-    print('\nНа линейную сложность')
-    success, p, _ = linear_complexity_test(result, patternlen=8)
-    print("p = ", round(p, 5), '')
-
-    print('\nСпектральный')
-    p = spectral_test(result_str)
-    print("p = ", round(p, 5), '')
-
-    print('\nСовпадение перекрывающихся шаблонов')
-    p = overlapping_patterns_test(result_str)
-    print("p = ", round(p, 5))
+    # test = [1,1,0,1,0,1,1,1,1,0,0,0,1]
+    # success, p, _ = linear_complexity_test(test, patternlen=13)
+    # print("p = ", p, '')
