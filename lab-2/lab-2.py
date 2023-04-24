@@ -1,7 +1,7 @@
 import math
 import numpy as np
 from scipy.special import gammaincc, erfc, hyp1f1, gammainc
-
+import matplotlib.pyplot as plt
 
 def berelekamp_massey(bits):
     n = len(bits)
@@ -73,7 +73,7 @@ def linear_complexity_test(bits: str, patternlen=None):
     for i in range(K+1):
         tmp = ((v[i] - N * pi[i]) ** 2.0) / (N * pi[i])
         chisq += tmp
-    P = gammainc((K / 2.0), (chisq / 2.0))
+    P = gammainc(((K+1) / 2.0), (chisq / 2.0))
     # success = (P >= 0.01)
     return  P, None
 
@@ -255,9 +255,25 @@ if __name__ == '__main__':
     # p = overlapping_patterns_test(array_pi)
     # print("p = ", p)
     #
-    print('\nНа линейную сложность pi')
-    p, _ = linear_complexity_test(arrayPi, patternlen=495)
+
+    M = 501
+    print('\nНа линейную сложность pi, M = ', M)
+    p, _ = linear_complexity_test(arrayPi, patternlen=M)
     print("p = ", p, '')
+
+    # x = []
+    # y = []
+    # M = 480
+    # while M < 515:
+    #     p, _ = linear_complexity_test(arrayPi, patternlen=M)
+    #     print('M = ', M, '  p = ', round(p, 5))
+    #     x.append(M)
+    #     y.append(round(p, 5))
+    #     M += 1
+    # plt.plot(x, y, color='teal',  marker='o', linestyle='-', linewidth=2)
+    # y0 = [0.826335 for i in range(len(x))]
+    # plt.plot(x, y0, color='darkblue', linestyle='-', linewidth=2)
+    # plt.show()
 
     # test = [1,1,0,1,0,1,1,1,1,0,0,0,1]
     # success, p, _ = linear_complexity_test(test, patternlen=13)
