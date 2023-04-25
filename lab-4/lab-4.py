@@ -20,15 +20,39 @@ def superincreasing_sequence(n):
     return b
 
 
+def task_superincreasing_sequence(b, s):
+    x = [0]*n
+    i = n-1
+    while i >= 0:
+        if s >= b[i]:
+            x[i] = 1
+            s = s - b[i]
+        else:
+            x[i] = 0
+        i -= 1
+    return x
+
+
+def get_binary(m):
+    bin = []
+    while m > 0:
+        bin.append(m % 2)
+        m = m // 2
+    result = [bin[n-i] for i in range(n)]
+    result[0] = 1
+    result[-1] = 1
+    return result
+
+
 def get_key(n):
-    b = superincreasing_sequence(n)     # 3
-    m = sum(b) + 2
-    w = 0                               # 4
+    b = superincreasing_sequence(n)  # 3
+    M = sum(b) + n
+    w = 0  # 4
     while True:
-        w = random.randint(1, m - 1)
-        if __gcd(w, m) == 1:
+        w = random.randint(1, M - 1)
+        if __gcd(w, M) == 1:
             break
-    pi = []                             # 5
+    pi = []  # 5
     tmp = [i for i in range(n)]
     while len(tmp) > 0:
         ind = random.randint(0, len(tmp) - 1)
@@ -36,20 +60,45 @@ def get_key(n):
         tmp.pop(ind)
     a = []
     for i in range(n):
-        a.append(w*b[pi[i]])
+        a.append(w * b[pi[i]])
     # a = [w*b[pi[i]] for i in range(n)]  # 7 - открытый ключ
-    print(a)
     k = []
     for i in range(len(pi)):
         k.append(pi[i])
     # [k.append(pi[i]) for i in range(len(pi))]
-    k.append(m)
+    k.append(M)
     k.append(w)
     [k.append(b[i]) for i in range(len(b))]
+    return a, k
 
-    print(k)
 
+def encryption(m):
+    a, k = get_key(n)
+    m = get_binary(m)
+    c = 0
+    for i in range(len(a)):
+        c += m[i] * a[i]
+    return c, k, a
+
+
+def decryption(c, k):
+    pi = k[:n:]
+    M = k[n]
+    w = k[n + 1]
+    b = k[n + 2::]
+    d = (w ** (M - 1) * c) % M
+    r = task_superincreasing_sequence(b, d)
+    m = ''
+    for i in range(n):
+        m += str(r[pi[i]])
+    return int(m)
 
 
 if __name__ == '__main__':
-    get_key(n)
+    m = 123
+    c, k, a = encryption(m)
+    print('Зашифрованное сообщение с:', c)
+    print('Закрытый ключ k:', k)
+    print('Открытый ключ a:', a)
+    m_result = decryption(c, k)
+    print('Дешифрованное сообщение m:', m)
