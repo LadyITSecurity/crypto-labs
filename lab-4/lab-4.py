@@ -4,7 +4,7 @@
 import random
 
 n = 5
-
+t = 4
 
 def __gcd(a, b):
     if b == 0:
@@ -72,8 +72,8 @@ def get_key(n):
     return a, k
 
 
-def encryption(m):
-    a, k = get_key(n)
+def encryption(m, mode=get_key):
+    a, k = mode(n)
     m = get_binary(m)
     c = 0
     for i in range(len(a)):
@@ -94,9 +94,43 @@ def decryption(c, k):
     return int(m)
 
 
+def get_key_mn(n):
+    a = [[0] * n] * t
+    a = [superincreasing_sequence(n)]
+    M = [0]*t
+    W = [0]*t
+    for i in range(1, t+1):
+        M[i] = sum(a[i-1]) + n
+        while True:
+            W[i] = random.randint(1, M[i] - 1)
+            if __gcd(W[i], M[i]) == 1:
+                break
+        print(a[i - 1][0])
+        print(len(a[i-1]))
+        # for k in range(len(a[i - 1])):
+        #     a[i][k] = (a[i - 1][k] * W[i]) % M[i]
+        # a[i] = [(a[i-1][k] * W[i]) % M[i] for k in range(len(a[i-1]))]
+
+    pi = []  # 5
+    tmp = [i for i in range(n)]
+    while len(tmp) > 0:
+        ind = random.randint(0, len(tmp) - 1)
+        pi.append(tmp[ind])
+        tmp.pop(ind)
+    k = []
+    for i in range(len(pi)):
+        k.append(pi[i])
+    # [k.append(pi[i]) for i in range(len(pi))]
+    k.append(M)
+    [k.append(M[i]) for i in range(len(M))]
+    [k.append(W[i]) for i in range(len(W))]
+    return k
+
+
+
 if __name__ == '__main__':
     m = 123
-    c, k, a = encryption(m)
+    c, k, a = encryption(m, get_key_mn)
     print('Зашифрованное сообщение с:', c)
     print('Закрытый ключ k:', k)
     print('Открытый ключ a:', a)
