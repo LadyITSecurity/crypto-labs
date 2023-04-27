@@ -39,7 +39,9 @@ def get_binary(m):
     while m > 0:
         bin.append(m % 2)
         m = m // 2
-    result = [bin[n - i] for i in range(n)]
+    result = [0]*n
+    for i in range(len(bin)):
+        result[n-i-1] = bin[i]
     result[0] = 1
     result[-1] = 1
     return result
@@ -99,7 +101,6 @@ def get_key_mn(n):
     a = [superincreasing_sequence(n)]
     M = [0] * (t + 1)
     W = [0] * (t + 1)
-    print(a[0])
     for i in range(1, t + 1):
         a.append([0] * n)
         M[i] = sum(a[i - 1]) + n
@@ -107,8 +108,6 @@ def get_key_mn(n):
             W[i] = random.randint(1, M[i] - 1)
             if __gcd(W[i], M[i]) == 1:
                 break
-        print(a[i - 1][0])
-        print(len(a[i - 1]))
         for k in range(len(a[i - 1])):
             a[i][k] = (a[i - 1][k] * W[i]) % M[i]
     M.pop(0)
@@ -163,9 +162,10 @@ def decryption_mn(c, k):
 
 
 if __name__ == '__main__':
-    m = 123
+    m = 2
     c, k, a = encryption(m, get_key_mn)
     print('Исходное сообщение m:', m)
+    print('Шифруемое сообщение m:', get_binary(m))
     print('Зашифрованное сообщение с:', c)
     print('Закрытый ключ k:', k)
     print('Открытый ключ a:', a)
