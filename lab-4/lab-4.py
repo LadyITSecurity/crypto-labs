@@ -40,6 +40,8 @@ def get_binary(m):
         bin.append(m % 2)
         m = m // 2
     result = [0]*n
+    while len(bin) > n:
+        bin.pop(-1)
     for i in range(len(bin)):
         result[n-i-1] = bin[i]
     result[0] = 1
@@ -162,9 +164,9 @@ def decryption_mn(c, k):
 
 
 if __name__ == '__main__':
-    m = 2
+    m = 1234
     c, k, a = encryption(m, get_key_mn)
-    print('Исходное сообщение m:', m)
+    print('Исходное сообщение:', m)
     print('Шифруемое сообщение m:', get_binary(m))
     print('Зашифрованное сообщение с:', c)
     print('Закрытый ключ k:', k)
