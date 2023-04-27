@@ -95,11 +95,13 @@ def decryption(c, k):
 
 
 def get_key_mn(n):
-    a = [[0] * n] * t
+    a = [[0] * n]
     a = [superincreasing_sequence(n)]
     M = [0]*t
     W = [0]*t
-    for i in range(1, t+1):
+    print(a[0])
+    for i in range(1, t):
+        a.append([0]*n)
         M[i] = sum(a[i-1]) + n
         while True:
             W[i] = random.randint(1, M[i] - 1)
@@ -107,8 +109,8 @@ def get_key_mn(n):
                 break
         print(a[i - 1][0])
         print(len(a[i-1]))
-        # for k in range(len(a[i - 1])):
-        #     a[i][k] = (a[i - 1][k] * W[i]) % M[i]
+        for k in range(len(a[i - 1])):
+            a[i][k] = (a[i - 1][k] * W[i]) % M[i]
         # a[i] = [(a[i-1][k] * W[i]) % M[i] for k in range(len(a[i-1]))]
 
     pi = []  # 5
@@ -120,10 +122,12 @@ def get_key_mn(n):
     k = []
     for i in range(len(pi)):
         k.append(pi[i])
-    # [k.append(pi[i]) for i in range(len(pi))]
-    k.append(M)
-    [k.append(M[i]) for i in range(len(M))]
-    [k.append(W[i]) for i in range(len(W))]
+    for i in range(len(M)):
+        k.append(M[i])
+    for i in range(len(W)):
+        k.append(W[i])
+    for i in range(len(a[0])):
+        k.append(a[0][i])
     return k
 
 
