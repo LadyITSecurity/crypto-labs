@@ -6,6 +6,7 @@ import random
 n = 5
 t = 4
 
+
 def __gcd(a, b):
     if b == 0:
         return a
@@ -21,8 +22,8 @@ def superincreasing_sequence(n):
 
 
 def task_superincreasing_sequence(b, s):
-    x = [0]*n
-    i = n-1
+    x = [0] * n
+    i = n - 1
     while i >= 0:
         if s >= b[i]:
             x[i] = 1
@@ -38,7 +39,7 @@ def get_binary(m):
     while m > 0:
         bin.append(m % 2)
         m = m // 2
-    result = [bin[n-i] for i in range(n)]
+    result = [bin[n - i] for i in range(n)]
     result[0] = 1
     result[-1] = 1
     return result
@@ -65,7 +66,6 @@ def get_key(n):
     k = []
     for i in range(len(pi)):
         k.append(pi[i])
-    # [k.append(pi[i]) for i in range(len(pi))]
     k.append(M)
     k.append(w)
     [k.append(b[i]) for i in range(len(b))]
@@ -97,21 +97,20 @@ def decryption(c, k):
 def get_key_mn(n):
     a = [[0] * n]
     a = [superincreasing_sequence(n)]
-    M = [0]*(t+1)
-    W = [0]*(t+1)
+    M = [0] * (t + 1)
+    W = [0] * (t + 1)
     print(a[0])
-    for i in range(1, t+1):
-        a.append([0]*n)
-        M[i] = sum(a[i-1]) + n
+    for i in range(1, t + 1):
+        a.append([0] * n)
+        M[i] = sum(a[i - 1]) + n
         while True:
             W[i] = random.randint(1, M[i] - 1)
             if __gcd(W[i], M[i]) == 1:
                 break
         print(a[i - 1][0])
-        print(len(a[i-1]))
+        print(len(a[i - 1]))
         for k in range(len(a[i - 1])):
             a[i][k] = (a[i - 1][k] * W[i]) % M[i]
-        # a[i] = [(a[i-1][k] * W[i]) % M[i] for k in range(len(a[i-1]))]
     M.pop(0)
     W.pop(0)
     pi = []  # 5
@@ -145,20 +144,17 @@ def get_key_mn(n):
 
 def decryption_mn(c, k):
     pi = k[:n:]
-    M = k[n:n+t]
-    W = k[n+t:n+2*t]
-    b = k[n+2*t::]
-    d = [0] * (t+1)
+    M = k[n:n + t]
+    W = k[n + t:n + 2 * t]
+    b = k[n + 2 * t::]
+    d = [0] * (t + 1)
     d[-1] = c
-    i = len(W)-1
+    i = len(W) - 1
     while i > 0:
         tmp = pow(W[i], M[i] - 1, M[i])
         res = (tmp * d[i - 1]) % M[i]
         d[i] = res
         i -= 1
-        # d[len-i] = (pow(W[i], M[i]-1, M[i]) * d[i-1]) % M[i]
-    # print(d)
-
     r = task_superincreasing_sequence(b, d[0])
     m = ''
     for i in range(n):
