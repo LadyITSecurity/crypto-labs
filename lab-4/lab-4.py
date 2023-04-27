@@ -112,7 +112,8 @@ def get_key_mn(n):
         for k in range(len(a[i - 1])):
             a[i][k] = (a[i - 1][k] * W[i]) % M[i]
         # a[i] = [(a[i-1][k] * W[i]) % M[i] for k in range(len(a[i-1]))]
-
+    M.pop()
+    W.pop()
     pi = []  # 5
     tmp = [i for i in range(n)]
     while len(tmp) > 0:
@@ -128,9 +129,29 @@ def get_key_mn(n):
         k.append(W[i])
     for i in range(len(a[0])):
         k.append(a[0][i])
-    return k
+
+    pi = []
+    tmp = [i for i in range(n)]
+    while len(tmp) > 0:
+        ind = random.randint(0, len(tmp) - 1)
+        pi.append(tmp[ind])
+        tmp.pop(ind)
+    b = []
+    for i in range(n):
+        b.append(a[t][pi[i]])
+
+    return b, k
 
 
+def decryption_mn(c, k):
+    pi = k[:n:]
+    M = k[n:2*n]
+    W = k[2*n + 1:3*n + 1]
+    a = k[3*n + 1::]
+    d = [0] * t
+    for i in range(t):
+        d[i] = (pow(W[i], M[i]-1, M[i]) * d[i-1]) % M[i]
+    print(d)
 
 if __name__ == '__main__':
     m = 123
