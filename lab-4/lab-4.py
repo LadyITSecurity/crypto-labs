@@ -97,10 +97,10 @@ def decryption(c, k):
 def get_key_mn(n):
     a = [[0] * n]
     a = [superincreasing_sequence(n)]
-    M = [0]*t
-    W = [0]*t
+    M = [0]*(t+1)
+    W = [0]*(t+1)
     print(a[0])
-    for i in range(1, t):
+    for i in range(1, t+1):
         a.append([0]*n)
         M[i] = sum(a[i-1]) + n
         while True:
@@ -112,8 +112,8 @@ def get_key_mn(n):
         for k in range(len(a[i - 1])):
             a[i][k] = (a[i - 1][k] * W[i]) % M[i]
         # a[i] = [(a[i-1][k] * W[i]) % M[i] for k in range(len(a[i-1]))]
-    M.pop()
-    W.pop()
+    M.pop(0)
+    W.pop(0)
     pi = []  # 5
     tmp = [i for i in range(n)]
     while len(tmp) > 0:
@@ -145,13 +145,21 @@ def get_key_mn(n):
 
 def decryption_mn(c, k):
     pi = k[:n:]
-    M = k[n:2*n]
-    W = k[2*n + 1:3*n + 1]
-    a = k[3*n + 1::]
+    M = k[n:n+t]
+    W = k[n+t:n+2*t]
+    b = k[n+2*t::]
     d = [0] * t
     for i in range(t):
         d[i] = (pow(W[i], M[i]-1, M[i]) * d[i-1]) % M[i]
-    print(d)
+    # print(d)
+
+    r = task_superincreasing_sequence(b, d)
+    m = ''
+    for i in range(n):
+        m += str(r[pi[i]])
+    return int(m)
+
+
 
 if __name__ == '__main__':
     m = 123
@@ -159,5 +167,5 @@ if __name__ == '__main__':
     print('Зашифрованное сообщение с:', c)
     print('Закрытый ключ k:', k)
     print('Открытый ключ a:', a)
-    m_result = decryption(c, k)
+    m_result = decryption_mn(c, k)
     print('Дешифрованное сообщение m:', m)
