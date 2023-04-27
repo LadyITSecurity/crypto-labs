@@ -148,22 +148,28 @@ def decryption_mn(c, k):
     M = k[n:n+t]
     W = k[n+t:n+2*t]
     b = k[n+2*t::]
-    d = [0] * t
-    for i in range(t):
-        d[i] = (pow(W[i], M[i]-1, M[i]) * d[i-1]) % M[i]
+    d = [0] * (t+1)
+    d[-1] = c
+    i = len(W)-1
+    while i > 0:
+        tmp = pow(W[i], M[i] - 1, M[i])
+        res = (tmp * d[i - 1]) % M[i]
+        d[i] = res
+        i -= 1
+        # d[len-i] = (pow(W[i], M[i]-1, M[i]) * d[i-1]) % M[i]
     # print(d)
 
-    r = task_superincreasing_sequence(b, d)
+    r = task_superincreasing_sequence(b, d[0])
     m = ''
     for i in range(n):
         m += str(r[pi[i]])
     return int(m)
 
 
-
 if __name__ == '__main__':
     m = 123
     c, k, a = encryption(m, get_key_mn)
+    print('Исходное сообщение m:', m)
     print('Зашифрованное сообщение с:', c)
     print('Закрытый ключ k:', k)
     print('Открытый ключ a:', a)
